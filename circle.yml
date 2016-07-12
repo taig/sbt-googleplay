@@ -1,0 +1,13 @@
+machine:
+  java:
+    version: oraclejdk8
+
+dependencies:
+  cache_directories:
+    - "~/.sbt"
+  override:
+    - sbt update
+
+test:
+  override:
+    - sbt ";clean;compile"
