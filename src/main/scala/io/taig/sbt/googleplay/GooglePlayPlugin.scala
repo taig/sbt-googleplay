@@ -40,7 +40,7 @@ object GooglePlayPlugin extends AutoPlugin {
         googlePlayServiceAccountKey := {
             sys.error {
                 """
-                  |Please specify your Google Play API service account private key (P12 file):
+                  |Please specify your Google Play API service account key (P12 file):
                   |
                   |googlePlayServiceAccountKey := file( "./path/to/key.p12" )
                   |
