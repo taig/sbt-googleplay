@@ -20,6 +20,6 @@ trait Keys {
     }
 
     val googlePlayPublish = taskKey[Unit] {
-        "Package a release apk and publish it to the googlePlay"
+        "Package a release apk and publish it to Google Play"
     }
 }
