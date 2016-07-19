@@ -105,7 +105,7 @@ object GooglePlayPlugin extends AutoPlugin {
                             packageName,
                             id,
                             code,
-                            locale.toString,
+                            locale,
                             listing
                         )
                         .execute()

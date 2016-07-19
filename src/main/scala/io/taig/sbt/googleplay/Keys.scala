@@ -21,7 +21,7 @@ trait Keys {
         "Target channel, either alpha, beta, production or rollout [beta]"
     }
 
-    val googlePlayChangelog = taskKey[Map[Locale, String]] {
+    val googlePlayChangelog = taskKey[Map[String, String]] {
         "Changelog to be added to the listing"
     }
 
