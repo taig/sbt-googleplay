@@ -19,6 +19,10 @@ trait Keys {
         "Target channel, either alpha, beta, production or rollout [beta]"
     }
 
+    val googlePlayChangelog = taskKey[Option[String]] {
+        "Changelog to be added to the listing"
+    }
+
     val googlePlayPublish = taskKey[Unit] {
         "Package a release apk and publish it to Google Play"
     }

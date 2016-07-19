@@ -25,6 +25,7 @@ object GooglePlayPlugin extends AutoPlugin {
             s"$path-$identifier/$version"
         },
         googlePlayTrack := "beta",
+        googlePlayChangelog := None,
         googlePlayServiceAccountEmail := {
             sys.error {
                 """
