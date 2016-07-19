@@ -10,7 +10,7 @@ publish the app via the _Google Play Developer API_.
 ## Installation
 
 ````
-addSbtPlugin( "io.taig" % "sbt-googleplay" % "1.1.0-SNAPSHOT" )
+addSbtPlugin( "io.taig" % "sbt-googleplay" % "1.1.0" )
 ````
 
 ## Usage
