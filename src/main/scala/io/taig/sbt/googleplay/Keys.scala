@@ -1,5 +1,7 @@
 package io.taig.sbt.googleplay
 
+import java.util.Locale
+
 import sbt._
 
 trait Keys {
@@ -17,6 +19,10 @@ trait Keys {
 
     val googlePlayTrack = settingKey[String] {
         "Target channel, either alpha, beta, production or rollout [beta]"
+    }
+
+    val googlePlayChangelog = taskKey[Map[String, String]] {
+        "Changelog to be added to the listing"
     }
 
     val googlePlayPublish = taskKey[Unit] {

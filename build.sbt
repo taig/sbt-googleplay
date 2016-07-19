@@ -1,4 +1,4 @@
-addSbtPlugin( "org.scala-android" % "sbt-android" % "1.6.7" )
+addSbtPlugin( "org.scala-android" % "sbt-android" % "1.6.8" )
 
 githubProject := "sbt-googleplay"
 
@@ -15,4 +15,4 @@ sbtPlugin := true
 
 scalaVersion := "2.10.6"
 
-version := "1.0.0"
+version := "1.1.0-SNAPSHOT"

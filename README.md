@@ -10,10 +10,12 @@ publish the app via the _Google Play Developer API_.
 ## Installation
 
 ````
-addSbtPlugin( "io.taig" % "sbt-googleplay" % "1.0.0" )
+addSbtPlugin( "io.taig" % "sbt-googleplay" % "1.1.0-SNAPSHOT" )
 ````
 
 ## Usage
+
+### Authentication
 
 In order to authenticate with the _Google Play Developer API_, you have to create
 a service account in the _Google Play Developer Console_ and obtain a P12 service
@@ -36,11 +38,26 @@ lazy val app = project( ... )
     )
 ```
 
+### Publishing
+
 When properly configured it is now possible to build, package and publish the app
 with a single command:
 
 ```
 sbt googlePlayPublish
 ```
+
+### Changelog
+
+It is optionally possible to submit a changelog via the `googlePlayChangelog` task
+while publishing the apk.
+
+```scala
+googlePlayChangelog := Map(
+    "en-US" -> "Fixed all the bugs"
+)
+```
+
+> Keep in mind to not exceed the 500 character limit
 
 [1]: https://github.com/scala-android/sbt-android/
