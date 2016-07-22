@@ -30,4 +30,8 @@ trait Keys {
     val googlePlayPublishApk = taskKey[File ⇒ Unit] {
         "Publish an APK file to Google Play"
     }
+
+    val googlePlayPublishFile = inputKey[Unit] {
+        "Validate a user input file and publish it to Google Play"
+    }
 }

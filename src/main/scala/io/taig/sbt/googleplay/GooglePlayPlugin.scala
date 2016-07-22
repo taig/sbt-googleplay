@@ -6,6 +6,7 @@ import com.google.api.client.http.FileContent
 import com.google.api.services.androidpublisher.model.{ ApkListing, Track }
 import sbt.Keys._
 import sbt._
+import sbt.complete.Parsers.spaceDelimited
 
 import scala.collection.JavaConversions._
 
@@ -51,6 +52,20 @@ object GooglePlayPlugin extends AutoPlugin {
             }
         },
         googlePlayPublish := googlePlayPublishApk.value( ( packageRelease in Android ).value ),
+        googlePlayPublishFile := {
+            val file = spaceDelimited( "<arg>" ).parsed match {
+                case Seq( file ) ⇒ new File( file )
+                case _           ⇒ sys.error {
+                    """
+                      |Invalid input arguments
+                      |Valid usage: googlePlayPublishFile file
+                      |  file: Path to APK file to publish
+                    """.stripMargin.trim
+                }
+            }
+
+            googlePlayPublishApk.value( file )
+        },
         googlePlayPublishApk := { file ⇒
             if ( !file.exists() ) {
                 sys.error {
