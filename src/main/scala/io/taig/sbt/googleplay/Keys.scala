@@ -1,7 +1,5 @@
 package io.taig.sbt.googleplay
 
-import java.util.Locale
-
 import sbt._
 
 trait Keys {
@@ -27,5 +25,9 @@ trait Keys {
 
     val googlePlayPublish = taskKey[Unit] {
         "Package a release apk and publish it to Google Play"
+    }
+
+    val googlePlayPublishApk = taskKey[File => Unit] {
+        "Publish an APK file to Google Play"
     }
 }
