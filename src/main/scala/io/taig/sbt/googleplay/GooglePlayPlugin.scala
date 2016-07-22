@@ -55,7 +55,7 @@ object GooglePlayPlugin extends AutoPlugin {
         googlePlayPublishFile := {
             val file = spaceDelimited( "<arg>" ).parsed match {
                 case Seq( file ) ⇒ new File( file )
-                case _           ⇒ sys.error {
+                case _ ⇒ sys.error {
                     """
                       |Invalid input arguments
                       |Valid usage: googlePlayPublishFile file
