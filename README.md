@@ -47,6 +47,19 @@ with a single command:
 sbt googlePlayPublish
 ```
 
+As of version 1.1.1, it is also possible to simply publish an existing `apk` file:
+ 
+ ```
+ sbt googlePlayPublishFile ./path/to/my/app.apk
+ ```
+ 
+ ```
+ myPublishingTask := {
+     val apk: File = ???
+     googlePlayPublishApk.value( apk )
+ }
+ ```
+
 ### Changelog
 
 It is optionally possible to submit a changelog via the `googlePlayChangelog` task
