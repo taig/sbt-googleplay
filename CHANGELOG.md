@@ -2,7 +2,7 @@
 
 ## 1.1.1
 
-_2016_07_??_
+_2016-07-22_
 
  * Add command line interface publishing without being forced to build the app with sbt-android in order to publish
 
