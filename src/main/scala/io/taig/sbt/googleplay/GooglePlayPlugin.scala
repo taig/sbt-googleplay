@@ -6,6 +6,7 @@ import com.google.api.client.http.FileContent
 import com.google.api.services.androidpublisher.model.{ ApkListing, Track }
 import sbt.Keys._
 import sbt._
+import sbt.complete.Parsers.spaceDelimited
 
 import scala.collection.JavaConversions._
 
@@ -33,8 +34,8 @@ object GooglePlayPlugin extends AutoPlugin {
                   |
                   |googlePlayServiceAccountEmail := "12345678910@developer.gserviceaccount.com"
                   |
-                  |You can set up a service account or find the email address in the Google Play Developer
-                  |Console (Settings > API access).
+                  |You can set up a service account or find the email address in the Google Play
+                  |Developer Console (Settings > API access).
                 """.stripMargin.trim
             }
         },
@@ -45,12 +46,38 @@ object GooglePlayPlugin extends AutoPlugin {
                   |
                   |googlePlayServiceAccountKey := file( "./path/to/key.p12" )
                   |
-                  |You can set up a service account or find the email address in the Google Play Developer
-                  |Console (Settings > API access).
+                  |You can set up a service account or find the email address in the Google Play
+                  |Developer Console (Settings > API access).
                 """.stripMargin.trim
             }
         },
-        googlePlayPublish := {
+        googlePlayPublish := googlePlayPublishApk.value( ( packageRelease in Android ).value ),
+        googlePlayPublishFile := {
+            val file = spaceDelimited( "<arg>" ).parsed match {
+                case Seq( file ) ⇒ new File( file )
+                case _ ⇒ sys.error {
+                    """
+                      |Invalid input arguments
+                      |Valid usage: googlePlayPublishFile file
+                      |  file: Path to APK file to publish
+                    """.stripMargin.trim
+                }
+            }
+
+            googlePlayPublishApk.value( file )
+        },
+        googlePlayPublishApk := { file ⇒
+            if ( !file.exists() ) {
+                sys.error {
+                    s"""
+                      |APK file does not exist:
+                      |${file.getAbsolutePath}
+                    """.stripMargin.trim
+                }
+            }
+
+            val apk = new FileContent( "application/vnd.android.package-archive", file )
+
             val service = Helper.authorize(
                 googlePlayApplication.value,
                 googlePlayServiceAccountEmail.value,
@@ -64,11 +91,6 @@ object GooglePlayPlugin extends AutoPlugin {
             val insert = edits.insert( packageName, null ).execute()
 
             val id = insert.getId
-
-            streams.value.log.info( s"Creating Google Play edit with id $id" )
-
-            val file = ( packageRelease in Android ).value
-            val apk = new FileContent( "application/vnd.android.package-archive", file )
 
             streams.value.log.info( "Uploading apk file ..." )
 
