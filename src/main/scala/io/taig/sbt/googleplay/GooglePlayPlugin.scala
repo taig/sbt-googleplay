@@ -1,14 +1,16 @@
 package io.taig.sbt.googleplay
 
+import java.util.Collections
+
 import android.AndroidPlugin
 import android.Keys._
 import com.google.api.client.http.FileContent
-import com.google.api.services.androidpublisher.model.{ ApkListing, Track }
+import com.google.api.services.androidpublisher.model.{ LocalizedText, Track, TrackRelease }
 import sbt.Keys._
 import sbt._
 import sbt.complete.Parsers.spaceDelimited
 
-import scala.collection.JavaConversions._
+import collection.JavaConverters._
 
 object GooglePlayPlugin extends AutoPlugin {
     object autoImport extends Keys
@@ -76,7 +78,7 @@ object GooglePlayPlugin extends AutoPlugin {
                 }
             }
 
-            val apk = new FileContent( "application/vnd.android.package-archive", file )
+            val apkFile = new FileContent( "application/vnd.android.package-archive", file )
 
             val service = Helper.authorize(
                 googlePlayApplication.value,
@@ -94,9 +96,9 @@ object GooglePlayPlugin extends AutoPlugin {
 
             streams.value.log.info( "Uploading apk file ..." )
 
-            val upload = edits.apks().upload( packageName, id, apk ).execute()
+            val apk = edits.apks().upload( packageName, id, apkFile ).execute()
 
-            val code = upload.getVersionCode
+            val code = apk.getVersionCode
 
             streams.value.log.info( s"Version code $code has been uploaded" )
 
@@ -104,34 +106,35 @@ object GooglePlayPlugin extends AutoPlugin {
 
             streams.value.log.info( s"Adding apk to $track track" )
 
-            edits
-                .tracks()
+            val changelogs = googlePlayChangelog.value.map {
+                case ( locale, changelog ) ⇒ new LocalizedText()
+                    .setLanguage( locale )
+                    .setText( changelog )
+            }
+
+            val apkVersionCodes = List( java.lang.Long.valueOf( apk.getVersionCode.toLong ) )
+            val updateTrackRequest = edits
+                .tracks
                 .update(
                     packageName,
                     id,
                     track,
-                    new Track().setVersionCodes( List( code ) )
-                )
-                .execute()
-
-            googlePlayChangelog.value.foreach {
-                case ( locale, changelog ) ⇒
-                    streams.value.log.info( s"Uploading changelog for $locale" )
-
-                    val listing = new ApkListing()
-                    listing.setRecentChanges( changelog )
-
-                    edits
-                        .apklistings()
-                        .update(
-                            packageName,
-                            id,
-                            code,
-                            locale,
-                            listing
+                    new Track()
+                        .setReleases(
+                            Collections
+                                .singletonList(
+                                    new TrackRelease()
+                                        .setName( "My Beta Release" )
+                                        .setVersionCodes( apkVersionCodes.asJava )
+                                        .setStatus( "completed" )
+                                        .setReleaseNotes(
+                                            changelogs.toList.asJava
+                                        )
+                                )
                         )
-                        .execute()
-            }
+                )
+            val updatedTrack = updateTrackRequest.execute
+            streams.value.log.info( String.format( "Track %s has been updated.", updatedTrack.getTrack ) )
 
             streams.value.log.info( "Committing update!" )
 
